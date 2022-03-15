@@ -10,7 +10,7 @@ class App extends Component {
 	render() {
 		return (
 			<script src="https://apis.google.com/js/platform.js" async defer></script>
-			<meta name="google-signin-client_id" content="554823153885-g6qe6cqvtbrf2oico1m8ag5gkqsqupnm.apps.googleusercontent.com.apps.googleusercontent.com">
+			<helmet><meta name="google-signin-client_id" content="554823153885-g6qe6cqvtbrf2oico1m8ag5gkqsqupnm.apps.googleusercontent.com.apps.googleusercontent.com"></helmet>
 			<>
 				<Container style={{
 					display: 'flex',

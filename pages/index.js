@@ -1,4 +1,6 @@
+/* global google */
 import Head from 'next/head';
+import Script from 'next/script';
 import React, { Component } from 'react';
 import { Segment, Header, Container, Icon, Input, Button } from 'semantic-ui-react';
 
@@ -7,11 +9,36 @@ class App extends Component {
 		super(props);
 	}
 
+	handleCredentialResponse(response) {
+		console.log('Encoded JWT ID token: ' + response.credential);
+	}
+
+	componentDidMount() {
+		const script = document.createElement('script');
+		script.src = 'https://accounts.google.com/gsi/client';
+		script.async = true;
+		script.defer = true;
+		document.body.appendChild(script);
+
+		setTimeout(() => {
+			google.accounts.id.initialize({
+				client_id: '790718621561-40q6f32jb9l4ug1iv4bjdgmbgbrtsub5.apps.googleusercontent.com',
+				callback: this.handleCredentialResponse,
+			});
+			google.accounts.id.renderButton(
+				document.getElementById('buttonDiv'),
+				{ theme: 'outline', size: 'large' }, // customization attributes
+			);
+			google.accounts.id.prompt();
+		}, 1000);
+	}
+
 	render() {
 		return (
-			<script src="https://apis.google.com/js/platform.js" async defer></script>
-			<meta name="google-signin-client_id" content="554823153885-g6qe6cqvtbrf2oico1m8ag5gkqsqupnm.apps.googleusercontent.com.apps.googleusercontent.com">
 			<>
+				<Head>
+					<meta name='google-signin-client_id" content="554823153885-g6qe6cqvtbrf2oico1m8ag5gkqsqupnm.apps.googleusercontent.com' />
+				</Head>
 				<Container style={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -23,22 +50,7 @@ class App extends Component {
 						width: '100vh',
 					}}>
 
-						<Header as='h1'>Login to the Teacher Portal</Header>
-
-						<Container style={{
-							paddingTop: '30px',
-						}}>
-							<Input iconPosition='left' placeholder='Email' fluid>
-								<Icon name='at' />
-								<input />
-							</Input>
-							<Input placeholder='Password' fluid style={{
-								paddingTop: '30px',
-								paddingBottom: '30px',
-							}} />
-							<Button positive fluid>Login</Button>
-							<div class="g-signin2" data-onsuccess="onSignIn"></div>
-						</Container>
+						<div id='buttonDiv'></div>
 					</Segment>
 				</Container>
 			</>

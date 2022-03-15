@@ -49,8 +49,7 @@ class App extends Component {
 						padding: '110px',
 						width: '100vh',
 					}}>
-
-						<div id='buttonDiv'></div>
+						<div id='buttonDiv'>Loading...</div>
 					</Segment>
 				</Container>
 			</>

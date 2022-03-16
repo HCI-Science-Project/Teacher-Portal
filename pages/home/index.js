@@ -24,7 +24,7 @@ class App extends Component {
 
 	logout() {
 		localStorage.removeItem('userInfo');
-		window.location.href = process.env.NODE_ENV === 'production' ? '/Teacher-Portal' : '/';
+		history.back();
 	}
 
 	render() {

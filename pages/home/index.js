@@ -24,7 +24,7 @@ class App extends Component {
 
 	logout() {
 		localStorage.removeItem('userInfo');
-		history.back();
+		window.location.href = '/Teacher-Portal'; // careful I'm hardcoding this so it doesn't work on the dev server
 	}
 
 	render() {

@@ -1,7 +1,5 @@
 /* global google */
 import Head from 'next/head';
-import * as jwt from 'jwt-simple';
-import Script from 'next/script';
 import axios from 'axios';
 import React, { Component } from 'react';
 import { Segment, Header, Container, Icon, Input, Button } from 'semantic-ui-react';
@@ -17,30 +15,35 @@ class App extends Component {
 		this.handleCredentialResponse = this.handleCredentialResponse.bind(this);
 	}
 
-	parseJWT(key, secret) {
-		let decodedJwt;
-		try {
-			decodedJwt = jwt.decode(key, secret);
-		}
-		catch (err) {
-			// nothing
-		}
-		return decodedJwt;
+	parseJWT(token) {
+		const base64Url = token.split('.')[1];
+		const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+		const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+		}).join(''));
+
+		return JSON.parse(jsonPayload);
 	}
 
 	async handleCredentialResponse(response) {
-		const cert = '-----BEGIN CERTIFICATE-----\nMIIDJjCCAg6gAwIBAgIIJMUg7I+7qIswDQYJKoZIhvcNAQEFBQAwNjE0MDIGA1UE\nAwwrZmVkZXJhdGVkLXNpZ25vbi5zeXN0ZW0uZ3NlcnZpY2VhY2NvdW50LmNvbTAe\nFw0yMjAzMDQxNTIxNDBaFw0yMjAzMjEwMzM2NDBaMDYxNDAyBgNVBAMMK2ZlZGVy\nYXRlZC1zaWdub24uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20wggEiMA0GCSqG\nSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCtfO33GkoLW+pu1Wb5cmLbKzX/gtqJEoGE\nE3JRO1MFl52Am2vddTpJKiXwcQPDMC49vdw4MAGvTCk2YQYWDt1xIvpA5JJveye2\n+yJirFRcgWcWkAYwQDZLNyicUt0Bos0oBfVPgXURTnS/bQQhkXFZ1HyxnQKWs6uL\nE9/9NHaFGiqLK+ukTJ5XHFZq1p7YM9OaB5OZ1qc8AqOylH2IXjESlGijYwpQYYwM\nNm8UlJKUvUF3bpJtcQdi+fia44ta5qujhVrYdQ+d8NckQ88CvYxqDWxuIQyCOzQV\nSV8mST+hmvwYQ6fLhM6WEaYmas8KS6caPfICbA6YNQumNGKGSeSnAgMBAAGjODA2\nMAwGA1UdEwEB/wQCMAAwDgYDVR0PAQH/BAQDAgeAMBYGA1UdJQEB/wQMMAoGCCsG\nAQUFBwMCMA0GCSqGSIb3DQEBBQUAA4IBAQBrTj3aIRxbH2QRlEgc/ZqMTQuOXqud\nd2CgMNoyTGO+uvMStHnLDIA6G31rN9mBFPrrCX4fbXsEcnw8diiyRMtk/H+MgbP5\nv4B0foDWkzzK9yG9JPS8uD60h7YSv/13flYHBvhG+lr5/nJEf1RNUo8gzGVNyEag\nLf1v/gMLLtqqvnTA7j9bu+ltj3WaD7nEd+MYgbUWDmfsbZJ8pEpSq+11c8OveEcB\naVlMcPw7zIJieAKTxmabcZsQYjEjU1CcWtuzzs2mnHy44Ow24REeZg5wzU0ZRI01\nnjfiSqbA4lUPd6X5cHPOpt7cFcnVElHWoiroQi38+BWWBunw/hl5/2Qy\n-----END CERTIFICATE-----\n';
 
 		console.log('Encoded JWT ID token: ' + response.credential);
 
 		this.setState({ JWT: response.credential });
-		this.setState({ userInfo: this.parseJWT(response.credential, cert) });
+		this.setState({ userInfo: this.parseJWT(response.credential) });
 
 		console.log(this.state.userInfo);
-		this.updateOutput();
+
+		localStorage.setItem('userInfo', JSON.stringify(this.state.userInfo));
+		if (localStorage.getItem('userInfo') !== null) {
+			window.location.href = './home';
+		}
 	}
 
 	componentDidMount() {
+		if (localStorage.getItem('userInfo') !== null) {
+			window.location.href = './home';
+		}
 		const script = document.createElement('script');
 		script.src = 'https://accounts.google.com/gsi/client';
 		script.async = true;
@@ -57,14 +60,7 @@ class App extends Component {
 				{ theme: 'outline', size: 'large' }, // customization attributes
 			);
 			google.accounts.id.prompt();
-		}, 1000);
-	}
-
-
-	updateOutput = () => {
-		if ((this.state.userInfo.email.endsWith('hci.edu.sg') /* && !this.state.userInfo.email.endsWith('student.hci.edu.sg') */) || this.state.userInfo.email === 'mrgeek484@gmail.com') {
-			this.setState({ output: `Welcome, ${this.state.userInfo.name}` });
-		}
+		}, 2500);
 	}
 
 	render() {
@@ -84,7 +80,6 @@ class App extends Component {
 						width: '100vh',
 					}}>
 						<div id='buttonDiv'>Loading...</div>
-						<Header as='h1'>{this.state.output}</Header>
 					</Segment>
 				</Container>
 			</>

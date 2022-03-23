@@ -8,17 +8,24 @@ class App extends Component {
 		super(props);
 		this.state = {
 			userData: {},
+			output: '',
 		};
 	}
 
-	componentDidMount() {
+	async componentDidMount() {
 		if (localStorage.getItem('userInfo') !== null) {
-			this.setState({
+			await this.setState({
 				userData: JSON.parse(localStorage.getItem('userInfo')),
 			});
+
+			if (!this.state.userData.email.endsWith('hci.edu.sg') && !this.state.userData.email.endsWith('student.hci.edu.sg')) {
+				this.setState({
+					output: 'You are not authorized to view this page!',
+				});
+			}
 		}
 		if (localStorage.getItem('userInfo') === null) {
-			window.location.href = '/';
+			window.location.href = '/Teacher-Portal';
 		}
 	}
 
@@ -32,7 +39,11 @@ class App extends Component {
 			<Container style={{
 				paddingTop: '50px',
 			}}>
+				<Head>
+					<title>Home</title>
+				</Head>
 				<Header as='h1'>Welcome {this.state.userData.name}!</Header>
+				<p>{this.state.output}</p>
 				<Button negative fluid onClick={() => this.logout()}>Logout</Button>
 			</Container>
 		);

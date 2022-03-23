@@ -11,6 +11,7 @@ class App extends Component {
 			JWT: '',
 			gsiRes: '',
 			userInfo: {},
+			output: '',
 		};
 		this.handleCredentialResponse = this.handleCredentialResponse.bind(this);
 	}
@@ -60,7 +61,7 @@ class App extends Component {
 				{ theme: 'outline', size: 'large' }, // customization attributes
 			);
 			google.accounts.id.prompt();
-		}, 2500);
+		}, 1750);
 	}
 
 	render() {
@@ -80,6 +81,7 @@ class App extends Component {
 						width: '100vh',
 					}}>
 						<div id='buttonDiv'>Loading...</div>
+						<Header as='h3'>{this.state.output}</Header>
 					</Segment>
 				</Container>
 			</>

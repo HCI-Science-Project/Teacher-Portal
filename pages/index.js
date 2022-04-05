@@ -16,26 +16,14 @@ class App extends Component {
 		this.handleCredentialResponse = this.handleCredentialResponse.bind(this);
 	}
 
-	parseJWT(token) {
-		const base64Url = token.split('.')[1];
-		const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-		const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-		}).join(''));
-
-		return JSON.parse(jsonPayload);
-	}
 
 	async handleCredentialResponse(response) {
 
 		console.log('Encoded JWT ID token: ' + response.credential);
 
-		this.setState({ JWT: response.credential });
-		this.setState({ userInfo: this.parseJWT(response.credential) });
+		await this.setState({ JWT: response.credential });
 
-		console.log(this.state.userInfo);
-
-		localStorage.setItem('userInfo', JSON.stringify(this.state.userInfo));
+		localStorage.setItem('userInfo', JSON.stringify(this.state.JWT));
 		if (localStorage.getItem('userInfo') !== null) {
 			window.location.href = './home';
 		}

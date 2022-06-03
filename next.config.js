@@ -1,8 +1,8 @@
+const withLess = require('next-with-less');
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
-	reactStrictMode: true,
-	basePath: process.env.NODE_ENV === 'production' ? '/Teacher-Portal' : '',
 	pageExtensions: ['md', 'mdx', 'tsx', 'ts', 'jsx', 'js'],
 	webpack: (config, options) => {
 		config.module.rules.push({
@@ -20,4 +20,4 @@ const nextConfig = {
 	},
 };
 
-module.exports = nextConfig;
+module.exports = withLess(nextConfig);

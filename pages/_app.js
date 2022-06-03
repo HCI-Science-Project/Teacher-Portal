@@ -1,10 +1,14 @@
 import '../styles/globals.css';
-import 'fomantic-ui-css/semantic.min.css';
+import { SessionProvider } from 'next-auth/react';
+import 'rsuite/styles/index.less';
 
-function MyApp({ Component, pageProps }) {
+export default function App({
+	Component,
+	pageProps: { session, ...pageProps },
+}) {
 	return (
-		<Component {...pageProps} />
+		<SessionProvider session={session}>
+			<Component {...pageProps} />
+		</SessionProvider>
 	);
 }
-
-export default MyApp;

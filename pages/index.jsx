@@ -3,6 +3,7 @@ import { Container, Header, FlexboxGrid, Button, ButtonToolbar } from 'rsuite';
 import Head from 'next/head';
 import styles from '../styles/Index.module.css';
 
+
 export default function App() {
 	const { data: session } = useSession({
 		required: true,
@@ -23,8 +24,8 @@ export default function App() {
 					<FlexboxGrid justify='center'>
 						<FlexboxGrid.Item colspan={12}>
 							<Header>
-								<h2>Teacher&apos;s Portal</h2>
-								<h5 style={{
+								<h2 className={styles.center}>Teacher&apos;s Portal</h2>
+								<h5 className={styles.center} style={{
 									marginTop: '0.5em',
 								}}>Currently signed in as {session?.user?.name}</h5>
 							</Header>

@@ -29,6 +29,7 @@ export default function App() {
 									marginTop: '0.5em',
 								}}>Currently signed in as {session?.user?.name}</h5>
 							</Header>
+
 							<ButtonToolbar style={{
 								marginTop: '1em',
 							}}>
